@@ -19,6 +19,7 @@ from langchain.vectorstores import OpenSearchVectorSearch
 from langchain.vectorstores.pgvector import PGVector
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferWindowMemory
+from langchain.llms import OpenAI
 
 # Log full text sent to LLM
 VERBOSE = False
@@ -36,13 +37,17 @@ def main():
     openai_model_name = os.getenv("OPENAI_MODEL_NAME")
     aws_credential_profile_name = os.getenv("AWS_CREDENTIAL_PROFILE_NAME")
     aws_bedrock_model_name = os.getenv("AWS_BEDROCK_MODEL_NAME")
+    openai_key = os.getenv("OPENAI_API_KEY")
 
     # Access persisted embeddings and expose through langchain retriever
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     db = get_embed_db(embeddings)
     retriever = db.as_retriever()
 
-    if openai_model_name:
+    if openai_key:
+        print("Using OpenAI for language model.")
+        llm = OpenAI(openai_api_key=openai_key)
+    elif openai_model_name:
         print("Using Azure for language model.")
         llm = AzureChatOpenAI(
             temperature=0.5, deployment_name=openai_model_name, verbose=VERBOSE

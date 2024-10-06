@@ -34,6 +34,7 @@ from langchain.vectorstores import OpenSearchVectorSearch
 from langchain.vectorstores.pgvector import PGVector
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferWindowMemory
+from langchain.llms import OpenAI
 
 from streamlit.logger import get_logger
 
@@ -68,8 +69,12 @@ def load_llm():
     openai_model_name = os.getenv("OPENAI_MODEL_NAME")
     aws_credential_profile_name = os.getenv("AWS_CREDENTIAL_PROFILE_NAME")
     aws_bedrock_model_name = os.getenv("AWS_BEDROCK_MODEL_NAME")
+    openai_key = os.getenv("OPENAI_API_KEY")
     llm = None
-    if openai_model_name:
+    if openai_key:
+        print("Using OpenAI for language model.")
+        llm = OpenAI(openai_api_key=openai_key)
+    elif openai_model_name:
         print("Using Azure for language model.")
         llm = AzureChatOpenAI(
             temperature=0.5, deployment_name=openai_model_name, verbose=VERBOSE
