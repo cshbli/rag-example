@@ -13,6 +13,8 @@ CHROMA_PERSIST_DIR=doc_index
 - After install the requirements, install `langchain-community`
 ```
 pip install -U langchain-community
+# To use OpenAIEmbeddings
+pip install tiktoken
 ```
 
 4. Run the document indexing script - `python index_documents.py`
